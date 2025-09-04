@@ -4,7 +4,7 @@ const Card = ({ children, className }) => <div className={className}>{children}<
 const CardHeader = ({ children, className }) => <div className={className}>{children}</div>;
 const CardTitle = ({ children, className }) => <div className={className}>{children}</div>;
 const CardContent = ({ children, className }) => <div className={className}>{children}</div>;
-import Icon from '@/components/AppIcon'; // Assuming AppIcon is correctly aliased or relatively imported
+import Icon from '../../../components/AppIcon'; // Fixed relative import for Vite
 
 const ServicePriceCard = () => {
     const services = [
