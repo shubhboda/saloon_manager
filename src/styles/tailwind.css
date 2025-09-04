@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core Saloon Theme Colors */
+    --color-background: #FDF7EC; /* Aged paper / Light cream */
+    --color-foreground: #3A2E2A; /* Dark Brown / Near-black */
+    --color-border: #D4C9B6; /* Subtle light brown */
+    --color-input: #FFFFFF; /* White */
+    --color-ring: #B8860B; /* Goldenrod / Metallic gold accent */
+    
+    /* Card Colors */
+    --color-card: #FFFFFF; /* Pure white for content contrast */
+    --color-card-foreground: #3A2E2A; /* Dark Brown */
+    
+    /* Popover Colors */
+    --color-popover: #FFFFFF; /* Pure white */
+    --color-popover-foreground: #3A2E2A; /* Dark Brown */
+    
+    /* Muted Colors */
+    --color-muted: #EFEADF; /* Muted light cream */
+    --color-muted-foreground: #8B7A6F; /* Muted medium brown */
+    
+    /* Primary Colors */
+    --color-primary: #8B4513; /* Saddle Brown / Rich brown */
+    --color-primary-foreground: #FFFFFF; /* White */
+    
+    /* Secondary Colors */
+    --color-secondary: #A0522D; /* Sienne / Medium reddish-brown */
+    --color-secondary-foreground: #FFFFFF; /* White */
+    
+    /* Accent Colors */
+    --color-accent: #B8860B; /* Goldenrod / Metallic gold accent */
+    --color-accent-foreground: #FFFFFF; /* White */
+    
+    /* Success Colors */
+    --color-success: #3D9970; /* Forest Green / Deep, natural green */
+    --color-success-foreground: #FFFFFF; /* White */
+    
+    /* Warning Colors */
+    --color-warning: #FFBF00; /* Amber / Warm orange */
+    --color-warning-foreground: #3A2E2A; /* Dark Brown */
+    
+    /* Error/Destructive Colors */
+    --color-error: #B22222; /* Firebrick / Deep red */
+    --color-error-foreground: #FFFFFF; /* White */
+    --color-destructive: #B22222; /* Firebrick / Deep red */
+    --color-destructive-foreground: #FFFFFF; /* White */
+
+    --radius: 0.5rem;
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .salon-shadow-card {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  }
+  
+  .salon-shadow-modal {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .salon-transition-micro {
+    transition: all 150ms ease-out;
+  }
+  
+  .salon-transition-layout {
+    transition: all 300ms ease-in-out;
+  }
+  
+  .salon-hover-scale {
+    transform: scale(1);
+  }
+  
+  .salon-hover-scale:hover {
+    transform: scale(0.98);
+  }
+  
+  .salon-pulse-feedback {
+    animation: salon-pulse 1s ease-in-out infinite;
+  }
+  
+  @keyframes salon-pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1.0; }
+  }
+}
