@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS cosmetics_stock (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  quantity INT NOT NULL,
+  unit VARCHAR(20) DEFAULT 'pcs'
+);
