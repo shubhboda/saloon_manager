@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from 'components/ui/Button';
-import Icon from 'components/AppIcon';
+import AppIcon from '@/components/AppIcon';
 
 const NotFound = () => {
   const navigate = useNavigate();
