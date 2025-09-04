@@ -1,5 +1,9 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'; // Assuming you have a Card component in ui
+// Temporary Card components to fix build error
+const Card = ({ children, className }) => <div className={className}>{children}</div>;
+const CardHeader = ({ children, className }) => <div className={className}>{children}</div>;
+const CardTitle = ({ children, className }) => <div className={className}>{children}</div>;
+const CardContent = ({ children, className }) => <div className={className}>{children}</div>;
 import Icon from '@/components/AppIcon'; // Assuming AppIcon is correctly aliased or relatively imported
 
 const ServicePriceCard = () => {
