@@ -20,9 +20,9 @@ const CustomerManagement = () => {
   const mockCustomers = [
     {
       id: 'CUST001',
-      name: 'Emily Rodriguez',
-      email: 'emily.rodriguez@email.com',
-      phone: '(555) 123-4567',
+      name: 'Ravi Sharma',
+      email: 'ravi.sharma247@email.in',
+      phone: '+91 98764 32015',
       avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
       lastVisit: '2025-01-15',
       totalSpent: 1250.00,
@@ -37,9 +37,9 @@ const CustomerManagement = () => {
     },
     {
       id: 'CUST002',
-      name: 'Michael Chen',
-      email: 'michael.chen@email.com',
-      phone: '(555) 234-5678',
+      name: 'Pooja Mehta',
+      email: 'pooja.m1993@outlook.com',
+      phone: '+91 91234 78956',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
       lastVisit: '2025-01-12',
       totalSpent: 890.00,
@@ -54,9 +54,9 @@ const CustomerManagement = () => {
     },
     {
       id: 'CUST003',
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@email.com',
-      phone: '(555) 345-6789',
+      name: 'Arjun Verma',
+      email: 'arjun.verma88@gmail.com',
+      phone: '+91 99872 45610',
       avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
       lastVisit: '2025-01-10',
       totalSpent: 650.00,
