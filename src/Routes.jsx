@@ -10,6 +10,9 @@ import CustomerManagement from './pages/customer-management';
 import StaffManagement from './pages/staff-management';
 import Register from './pages/register';
 import CustomerPortal from './pages/customer-portal';
+import BookAppointment from './pages/customer-portal/BookAppointment';
+import AppointmentsHistory from './pages/customer-portal/AppointmentsHistory';
+import CustomerProfile from './pages/customer-portal/CustomerProfile';
 
 const Routes = () => {
   return (
@@ -28,7 +31,10 @@ const Routes = () => {
 
         {/* Customer Portal routes */}
         <Route path="/customer" element={<CustomerPortal />} />
-        {/* Additional customer routes can be nested here */}
+        <Route path="/customer/dashboard" element={<CustomerPortal />} />
+        <Route path="/customer/book-appointment" element={<BookAppointment />} />
+        <Route path="/customer/appointments" element={<AppointmentsHistory />} />
+        <Route path="/customer/profile" element={<CustomerProfile />} />
 
         <Route path="*" element={<NotFound />} />
       </RouterRoutes>

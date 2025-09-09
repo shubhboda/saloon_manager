@@ -8,7 +8,14 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  const navigationItems = [
+  const isCustomerPortal = location?.pathname?.startsWith('/customer');
+
+  const navigationItems = isCustomerPortal ? [
+    { label: 'Dashboard', path: '/customer/dashboard', icon: 'LayoutDashboard' },
+    { label: 'Book Appointment', path: '/customer/book-appointment', icon: 'Calendar' },
+    { label: 'My Appointments', path: '/customer/appointments', icon: 'Clock' },
+    { label: 'Profile', path: '/customer/profile', icon: 'User' },
+  ] : [
     { label: 'Dashboard', path: '/dashboard', icon: 'LayoutDashboard' },
     { label: 'Calendar', path: '/appointment-calendar', icon: 'Calendar' },
     { label: 'Customers', path: '/customer-management', icon: 'Users' },
@@ -35,11 +42,13 @@ const Header = () => {
       <header className="fixed top-0 left-0 right-0 bg-card border-b border-border z-1000">
         <div className="flex items-center justify-between h-16 px-6">
           {/* Logo */}
-          <Link to="/dashboard" className="flex items-center space-x-2">
+          <Link to={isCustomerPortal ? "/customer/dashboard" : "/dashboard"} className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
               <Icon name="Scissors" size={20} color="white" />
             </div>
-            <span className="text-xl font-semibold text-foreground">Saloon Manager</span>
+            <span className="text-xl font-semibold text-foreground">
+              {isCustomerPortal ? "Saloon Customer Portal" : "Saloon Manager"}
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -62,6 +71,13 @@ const Header = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
+            {/* Switch Portal */}
+            <Link to={isCustomerPortal ? "/dashboard" : "/customer/dashboard"}>
+              <Button variant="outline" size="sm">
+                {isCustomerPortal ? "Switch to Owner" : "Switch to Customer"}
+              </Button>
+            </Link>
+
             {/* Notifications */}
             <Button variant="ghost" size="icon" className="relative">
               <Icon name="Bell" size={20} />
@@ -136,12 +152,14 @@ const Header = () => {
           ></div>
           <div className="fixed top-0 left-0 h-full w-64 bg-card border-r border-border z-1100 md:hidden salon-transition-layout">
             <div className="p-6">
-              <div className="flex items-center space-x-2 mb-8">
+              <Link to={isCustomerPortal ? "/customer/dashboard" : "/dashboard"} className="flex items-center space-x-2 mb-8">
                 <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
                   <Icon name="Scissors" size={20} color="white" />
                 </div>
-                <span className="text-xl font-semibold text-foreground">Saloon Manager</span>
-              </div>
+                <span className="text-xl font-semibold text-foreground">
+                  {isCustomerPortal ? "Saloon Customer Portal" : "Saloon Manager"}
+                </span>
+              </Link>
               
               <nav className="space-y-2">
                 {navigationItems?.map((item) => (

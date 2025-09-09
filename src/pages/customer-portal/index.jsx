@@ -4,12 +4,74 @@ import Header from '../../components/ui/Header';
 import Breadcrumb from '../../components/ui/Breadcrumb';
 import Button from '../../components/ui/Button';
 import Icon from '../../components/AppIcon';
+import { db } from '../../firebase';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
+
+// Booking Modal Component
+const BookingModal = ({ isOpen, onClose, services, onBook }) => {
+  const [selectedService, setSelectedService] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+
+  const handleSubmit = () => {
+    if (selectedService && selectedDate && selectedTime) {
+      onBook({ service: selectedService, date: selectedDate, time: selectedTime });
+      onClose();
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-card p-6 rounded-lg max-w-md w-full mx-4">
+        <h3 className="text-lg font-semibold mb-4">Book Appointment</h3>
+        <div className="space-y-4">
+          <select
+            value={selectedService}
+            onChange={(e) => setSelectedService(e.target.value)}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">Select Service</option>
+            {services.map(service => (
+              <option key={service.id} value={service.name}>{service.name} - ${service.price}</option>
+            ))}
+          </select>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="w-full p-2 border rounded"
+          />
+          <select
+            value={selectedTime}
+            onChange={(e) => setSelectedTime(e.target.value)}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">Select Time</option>
+            <option value="09:00">9:00 AM</option>
+            <option value="10:00">10:00 AM</option>
+            <option value="11:00">11:00 AM</option>
+            <option value="14:00">2:00 PM</option>
+            <option value="15:00">3:00 PM</option>
+            <option value="16:00">4:00 PM</option>
+          </select>
+        </div>
+        <div className="flex justify-end space-x-2 mt-4">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>Book</Button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const CustomerPortal = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Mock login state
   const [services, setServices] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   // Mock customer data
   const customer = {
@@ -53,6 +115,30 @@ const CustomerPortal = () => {
   }, []);
 
   const upcomingAppointments = appointments.slice(0, 2); // Show first 2 appointments
+
+  const handleBookAppointment = async (bookingData) => {
+    try {
+      const response = await fetch('http://localhost:4000/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_id: '1', // Mock customer ID
+          staff_id: '1', // Mock staff ID
+          service: bookingData.service,
+          time: `${bookingData.date} ${bookingData.time}`
+        })
+      });
+      if (response.ok) {
+        alert('Appointment booked successfully!');
+        // Refresh appointments
+        const res = await fetch('http://localhost:4000/api/appointments');
+        const data = await res.json();
+        setAppointments(data);
+      }
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -109,7 +195,7 @@ const CustomerPortal = () => {
 
               {/* Quick Actions */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Button className="h-20 flex flex-col items-center justify-center">
+                <Button className="h-20 flex flex-col items-center justify-center" onClick={() => setIsBookingOpen(true)}>
                   <Icon name="Plus" size={24} className="mb-2" />
                   Book Appointment
                 </Button>
@@ -174,6 +260,14 @@ const CustomerPortal = () => {
           </div>
         </div>
       </main>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        services={services}
+        onBook={handleBookAppointment}
+      />
     </div>
   );
 };
