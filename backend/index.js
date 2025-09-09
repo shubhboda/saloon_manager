@@ -1,3 +1,10 @@
+import express from 'express';
+import cors from 'cors';
+import mysql from 'mysql2/promise';
+const app = express();
+app.use(cors());
+app.use(express.json());
+
 // Test MySQL connection endpoint
 app.get('/api/test-db', async (req, res) => {
   try {
@@ -9,10 +16,6 @@ app.get('/api/test-db', async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
-import express from 'express';
-import mysql from 'mysql2/promise';
-const app = express();
-app.use(express.json());
 
 // MySQL connection config
 const dbConfig = {

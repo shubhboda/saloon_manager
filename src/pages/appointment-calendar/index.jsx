@@ -19,170 +19,75 @@ const AppointmentCalendar = () => {
   const [staffMembers, setStaffMembers] = useState([]);
   const [waitlistCustomers, setWaitlistCustomers] = useState([]);
 
-  // Mock data initialization
+  // Fetch data from API
   useEffect(() => {
-    const mockStaffMembers = [
-      {
-        id: 'sarah',
-        name: 'Sarah Johnson',
-        role: 'Senior Stylist',
-        available: true,
-        currentStatus: 'available',
-        schedule: {
-          0: { isWorking: false }, // Sunday
-          1: { isWorking: true, startTime: '09:00', endTime: '18:00' }, // Monday
-          2: { isWorking: true, startTime: '09:00', endTime: '18:00' }, // Tuesday
-          3: { isWorking: true, startTime: '09:00', endTime: '18:00' }, // Wednesday
-          4: { isWorking: true, startTime: '09:00', endTime: '18:00' }, // Thursday
-          5: { isWorking: true, startTime: '09:00', endTime: '17:00' }, // Friday
-          6: { isWorking: true, startTime: '10:00', endTime: '16:00' }  // Saturday
-        }
-      },
-      {
-        id: 'mike',
-        name: 'Mike Chen',
-        role: 'Hair Colorist',
-        available: true,
-        currentStatus: 'busy',
-        schedule: {
-          0: { isWorking: false },
-          1: { isWorking: true, startTime: '10:00', endTime: '19:00' },
-          2: { isWorking: true, startTime: '10:00', endTime: '19:00' },
-          3: { isWorking: true, startTime: '10:00', endTime: '19:00' },
-          4: { isWorking: true, startTime: '10:00', endTime: '19:00' },
-          5: { isWorking: true, startTime: '10:00', endTime: '18:00' },
-          6: { isWorking: true, startTime: '09:00', endTime: '17:00' }
-        }
-      },
-      {
-        id: 'emma',
-        name: 'Emma Davis',
-        role: 'Nail Technician',
-        available: true,
-        currentStatus: 'break',
-        schedule: {
-          0: { isWorking: false },
-          1: { isWorking: true, startTime: '09:00', endTime: '17:00' },
-          2: { isWorking: true, startTime: '09:00', endTime: '17:00' },
-          3: { isWorking: true, startTime: '09:00', endTime: '17:00' },
-          4: { isWorking: true, startTime: '09:00', endTime: '17:00' },
-          5: { isWorking: true, startTime: '09:00', endTime: '17:00' },
-          6: { isWorking: true, startTime: '10:00', endTime: '15:00' }
-        }
-      },
-      {
-        id: 'alex',
-        name: 'Alex Rodriguez',
-        role: 'Esthetician',
-        available: true,
-        currentStatus: 'available',
-        schedule: {
-          0: { isWorking: false },
-          1: { isWorking: true, startTime: '11:00', endTime: '20:00' },
-          2: { isWorking: true, startTime: '11:00', endTime: '20:00' },
-          3: { isWorking: true, startTime: '11:00', endTime: '20:00' },
-          4: { isWorking: true, startTime: '11:00', endTime: '20:00' },
-          5: { isWorking: true, startTime: '11:00', endTime: '19:00' },
-          6: { isWorking: true, startTime: '10:00', endTime: '18:00' }
-        }
-      }
-    ];
+    const fetchData = async () => {
+      try {
+        // Fetch staff
+        const staffResponse = await fetch('http://localhost:4000/api/staff');
+        const staffData = await staffResponse.json();
 
-    const mockAppointments = [
-      {
-        id: '1',
-        customerName: 'Alice Johnson',
-        customerPhone: '(555) 123-4567',
-        customerEmail: 'alice@example.com',
-        serviceType: 'haircut',
-        serviceName: 'Haircut',
-        staffId: 'sarah',
-        date: new Date()?.toISOString()?.split('T')?.[0],
-        time: '10:00',
-        duration: 45,
-        status: 'confirmed',
-        notes: 'Regular customer, prefers shorter layers'
-      },
-      {
-        id: '2',
-        customerName: 'Bob Smith',
-        customerPhone: '(555) 234-5678',
-        customerEmail: 'bob@example.com',
-        serviceType: 'coloring',
-        serviceName: 'Hair Coloring',
-        staffId: 'mike',
-        date: new Date()?.toISOString()?.split('T')?.[0],
-        time: '14:00',
-        duration: 120,
-        status: 'confirmed',
-        notes: 'First time coloring, wants natural brown'
-      },
-      {
-        id: '3',
-        customerName: 'Carol Davis',
-        customerPhone: '(555) 345-6789',
-        customerEmail: 'carol@example.com',
-        serviceType: 'manicure',
-        serviceName: 'Manicure',
-        staffId: 'emma',
-        date: new Date()?.toISOString()?.split('T')?.[0],
-        time: '11:30',
-        duration: 45,
-        status: 'pending',
-        notes: 'Gel polish, prefers neutral colors'
-      },
-      {
-        id: '4',
-        customerName: 'David Wilson',
-        customerPhone: '(555) 456-7890',
-        customerEmail: 'david@example.com',
-        serviceType: 'facial',
-        serviceName: 'Facial Treatment',
-        staffId: 'alex',
-        date: new Date()?.toISOString()?.split('T')?.[0],
-        time: '16:00',
-        duration: 90,
-        status: 'confirmed',
-        notes: 'Sensitive skin, avoid strong products'
-      }
-    ];
+        // Map staff data to the expected format
+        const formattedStaff = staffData.map(staff => ({
+          id: staff.id.toString(),
+          name: staff.name,
+          role: staff.role,
+          available: true,
+          currentStatus: 'available',
+          schedule: {
+            0: { isWorking: false },
+            1: { isWorking: true, startTime: '09:00', endTime: '18:00' },
+            2: { isWorking: true, startTime: '09:00', endTime: '18:00' },
+            3: { isWorking: true, startTime: '09:00', endTime: '18:00' },
+            4: { isWorking: true, startTime: '09:00', endTime: '18:00' },
+            5: { isWorking: true, startTime: '09:00', endTime: '17:00' },
+            6: { isWorking: true, startTime: '10:00', endTime: '16:00' }
+          }
+        }));
+        setStaffMembers(formattedStaff);
 
-    const mockWaitlistCustomers = [
-      {
-        id: 'w1',
-        name: 'Jennifer Brown',
-        phone: '(555) 567-8901',
-        requestedService: 'Hair Styling',
-        preferredStaff: 'Sarah Johnson',
-        priority: 'high',
-        addedTime: new Date(Date.now() - 45 * 60 * 1000)?.toISOString(), // 45 minutes ago
-        notes: 'Wedding tomorrow, very urgent'
-      },
-      {
-        id: 'w2',
-        name: 'Michael Taylor',
-        phone: '(555) 678-9012',
-        requestedService: 'Haircut',
-        preferredStaff: null,
-        priority: 'medium',
-        addedTime: new Date(Date.now() - 120 * 60 * 1000)?.toISOString(), // 2 hours ago
-        notes: 'Flexible with timing'
-      },
-      {
-        id: 'w3',
-        name: 'Lisa Anderson',
-        phone: '(555) 789-0123',
-        requestedService: 'Pedicure',
-        preferredStaff: 'Emma Davis',
-        priority: 'low',
-        addedTime: new Date(Date.now() - 30 * 60 * 1000)?.toISOString(), // 30 minutes ago
-        notes: 'Can wait until later today'
-      }
-    ];
+        // Fetch appointments
+        const appointmentsResponse = await fetch('http://localhost:4000/api/appointments');
+        const appointmentsData = await appointmentsResponse.json();
 
-    setStaffMembers(mockStaffMembers);
-    setAppointments(mockAppointments);
-    setWaitlistCustomers(mockWaitlistCustomers);
+        // Map appointments to expected format
+        const formattedAppointments = appointmentsData.map(apt => ({
+          id: apt.id.toString(),
+          customerName: `Customer ${apt.customer_id}`,
+          customerPhone: '(555) 123-4567',
+          customerEmail: 'customer@example.com',
+          serviceType: apt.service.toLowerCase().replace(' ', ''),
+          serviceName: apt.service,
+          staffId: apt.staff_id.toString(),
+          date: apt.time.split(' ')[0],
+          time: apt.time.split(' ')[1],
+          duration: 45,
+          status: 'confirmed',
+          notes: 'Appointment from database'
+        }));
+        setAppointments(formattedAppointments);
+
+        // Mock waitlist for now
+        const mockWaitlistCustomers = [
+          {
+            id: 'w1',
+            name: 'Jennifer Brown',
+            phone: '(555) 567-8901',
+            requestedService: 'Hair Styling',
+            preferredStaff: 'Sarah Johnson',
+            priority: 'high',
+            addedTime: new Date(Date.now() - 45 * 60 * 1000)?.toISOString(),
+            notes: 'Wedding tomorrow, very urgent'
+          }
+        ];
+        setWaitlistCustomers(mockWaitlistCustomers);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleTodayClick = () => {

@@ -89,8 +89,8 @@ const TrustSignals = () => {
             <span className="text-white font-semibold text-sm">SM</span>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-foreground">Sarah Mitchell</h4>
-            <p className="text-xs text-muted-foreground">Salon Owner, Beauty Haven</p>
+            <h4 className="text-sm font-medium text-foreground">SHUBH BODA</h4>
+            <p className="text-xs text-muted-foreground">Saloon Owner</p>
           </div>
         </div>
         <blockquote className="text-sm text-muted-foreground italic">

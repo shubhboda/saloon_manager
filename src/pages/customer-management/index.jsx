@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Header from '../../components/ui/Header';
 import Breadcrumb from '../../components/ui/Breadcrumb';
 import CustomerStats from './components/CustomerStats';
@@ -7,6 +7,7 @@ import CustomerTable from './components/CustomerTable';
 import CustomerModal from './components/CustomerModal';
 import Icon from '../../components/AppIcon';
 
+const API_BASE = 'http://localhost:4000/api';
 
 const CustomerManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,8 +16,28 @@ const CustomerManagement = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [modalMode, setModalMode] = useState('view');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock customer data
+  // Fetch customers from API
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/customers`);
+        if (!response.ok) throw new Error('Failed to fetch customers');
+        const data = await response.json();
+        setCustomers(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCustomers();
+  }, []);
+
+  // Mock customer data (fallback if API fails)
   const mockCustomers = [
     {
       id: 'CUST001',
@@ -156,21 +177,24 @@ const CustomerManagement = () => {
     }
   ];
 
-  // Mock statistics
-  const mockStats = {
-    totalCustomers: 1247,
-    customerGrowth: 8.2,
-    newCustomers: 42,
-    newCustomerGrowth: 15.3,
-    retentionRate: 87,
-    retentionChange: 3.1,
-    averageSpend: 156,
-    spendChange: 12.4
-  };
+  // Calculate statistics from customers
+  const mockStats = useMemo(() => {
+    const total = customers.length || 1247;
+    return {
+      totalCustomers: total,
+      customerGrowth: 8.2,
+      newCustomers: Math.floor(total * 0.03), // approx 3%
+      newCustomerGrowth: 15.3,
+      retentionRate: 87,
+      retentionChange: 3.1,
+      averageSpend: 156,
+      spendChange: 12.4
+    };
+  }, [customers]);
 
   // Filter customers based on search and filters
   const filteredCustomers = useMemo(() => {
-    let filtered = mockCustomers;
+    let filtered = customers.length > 0 ? customers : mockCustomers;
 
     // Apply search filter
     if (searchTerm) {
