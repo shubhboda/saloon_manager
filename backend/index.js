@@ -1,29 +1,27 @@
 import express from 'express';
 import cors from 'cors';
-import admin from 'firebase-admin';
-import serviceAccount from './serviceAccountKey.json' assert { type: 'json' };
+import mysql from 'mysql2/promise';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Initialize Firebase Admin SDK
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+// MySQL connection pool
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: '', // Add your MySQL password here
+  database: 'saloon_manager',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
-
-const db = admin.firestore();
 
 // Customers CRUD
 app.get('/api/customers', async (req, res) => {
   try {
-    const customersRef = db.collection('customers');
-    const snapshot = await customersRef.get();
-    const customers = [];
-    snapshot.forEach(doc => {
-      customers.push({ id: doc.id, ...doc.data() });
-    });
-    res.json(customers);
+    const [rows] = await pool.execute('SELECT * FROM customers');
+    res.json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -31,8 +29,8 @@ app.get('/api/customers', async (req, res) => {
 app.post('/api/customers', async (req, res) => {
   try {
     const { name, email, phone } = req.body;
-    const docRef = await db.collection('customers').add({ name, email, phone });
-    res.status(201).json({ id: docRef.id, name, email, phone });
+    const [result] = await pool.execute('INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)', [name, email, phone]);
+    res.status(201).json({ id: result.insertId, name, email, phone });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -40,7 +38,7 @@ app.post('/api/customers', async (req, res) => {
 app.put('/api/customers/:id', async (req, res) => {
   try {
     const { name, email, phone } = req.body;
-    await db.collection('customers').doc(req.params.id).update({ name, email, phone });
+    await pool.execute('UPDATE customers SET name = ?, email = ?, phone = ? WHERE id = ?', [name, email, phone, req.params.id]);
     res.json({ id: req.params.id, name, email, phone });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -48,7 +46,7 @@ app.put('/api/customers/:id', async (req, res) => {
 });
 app.delete('/api/customers/:id', async (req, res) => {
   try {
-    await db.collection('customers').doc(req.params.id).delete();
+    await pool.execute('DELETE FROM customers WHERE id = ?', [req.params.id]);
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -58,13 +56,8 @@ app.delete('/api/customers/:id', async (req, res) => {
 // Staff CRUD
 app.get('/api/staff', async (req, res) => {
   try {
-    const staffRef = db.collection('staff');
-    const snapshot = await staffRef.get();
-    const staff = [];
-    snapshot.forEach(doc => {
-      staff.push({ id: doc.id, ...doc.data() });
-    });
-    res.json(staff);
+    const [rows] = await pool.execute('SELECT * FROM staff');
+    res.json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -72,8 +65,8 @@ app.get('/api/staff', async (req, res) => {
 app.post('/api/staff', async (req, res) => {
   try {
     const { name, role } = req.body;
-    const docRef = await db.collection('staff').add({ name, role });
-    res.status(201).json({ id: docRef.id, name, role });
+    const [result] = await pool.execute('INSERT INTO staff (name, role) VALUES (?, ?)', [name, role]);
+    res.status(201).json({ id: result.insertId, name, role });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -81,7 +74,7 @@ app.post('/api/staff', async (req, res) => {
 app.put('/api/staff/:id', async (req, res) => {
   try {
     const { name, role } = req.body;
-    await db.collection('staff').doc(req.params.id).update({ name, role });
+    await pool.execute('UPDATE staff SET name = ?, role = ? WHERE id = ?', [name, role, req.params.id]);
     res.json({ id: req.params.id, name, role });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -89,7 +82,7 @@ app.put('/api/staff/:id', async (req, res) => {
 });
 app.delete('/api/staff/:id', async (req, res) => {
   try {
-    await db.collection('staff').doc(req.params.id).delete();
+    await pool.execute('DELETE FROM staff WHERE id = ?', [req.params.id]);
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -99,13 +92,8 @@ app.delete('/api/staff/:id', async (req, res) => {
 // Appointments CRUD
 app.get('/api/appointments', async (req, res) => {
   try {
-    const appointmentsRef = db.collection('appointments');
-    const snapshot = await appointmentsRef.get();
-    const appointments = [];
-    snapshot.forEach(doc => {
-      appointments.push({ id: doc.id, ...doc.data() });
-    });
-    res.json(appointments);
+    const [rows] = await pool.execute('SELECT * FROM appointments');
+    res.json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -113,8 +101,8 @@ app.get('/api/appointments', async (req, res) => {
 app.post('/api/appointments', async (req, res) => {
   try {
     const { customer_id, staff_id, service, time } = req.body;
-    const docRef = await db.collection('appointments').add({ customer_id, staff_id, service, time });
-    res.status(201).json({ id: docRef.id, customer_id, staff_id, service, time });
+    const [result] = await pool.execute('INSERT INTO appointments (customer_id, staff_id, service, time) VALUES (?, ?, ?, ?)', [customer_id, staff_id, service, time]);
+    res.status(201).json({ id: result.insertId, customer_id, staff_id, service, time });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -122,7 +110,7 @@ app.post('/api/appointments', async (req, res) => {
 app.put('/api/appointments/:id', async (req, res) => {
   try {
     const { customer_id, staff_id, service, time } = req.body;
-    await db.collection('appointments').doc(req.params.id).update({ customer_id, staff_id, service, time });
+    await pool.execute('UPDATE appointments SET customer_id = ?, staff_id = ?, service = ?, time = ? WHERE id = ?', [customer_id, staff_id, service, time, req.params.id]);
     res.json({ id: req.params.id, customer_id, staff_id, service, time });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -130,7 +118,7 @@ app.put('/api/appointments/:id', async (req, res) => {
 });
 app.delete('/api/appointments/:id', async (req, res) => {
   try {
-    await db.collection('appointments').doc(req.params.id).delete();
+    await pool.execute('DELETE FROM appointments WHERE id = ?', [req.params.id]);
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: error.message });
