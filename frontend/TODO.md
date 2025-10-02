@@ -1,23 +1,26 @@
-# TODO: Disconnect Firebase and Ensure Full MySQL Connection
+# TODO: Setup MySQL Database with XAMPP and Connect Backend
 
 ## Information Gathered
-- Backend already uses mysql2 for MySQL connection and exposes REST APIs for customers, staff, appointments.
-- Frontend has firebase.js config file but Firebase is not actively used (only unused imports in customer-portal).
-- Frontend already fetches data from backend API (localhost:4000).
-- Firebase dependency is in frontend/package.json.
+- Backend uses mysql2 for MySQL connection to 'saloon_manager' database.
+- REST APIs for customers, staff, appointments are implemented.
+- Frontend fetches data from backend API (localhost:4000).
+- Firebase has been disconnected.
 
 ## Plan
-- [x] Delete frontend/src/firebase.js file
-- [x] Edit frontend/src/pages/customer-portal/index.jsx: Remove unused Firebase imports (db, collection, getDocs, addDoc)
-- [x] Edit frontend/package.json: Remove firebase dependency
-- [x] Run npm install in frontend to update dependencies
-- [x] Verify app works fully connected to MySQL backend without Firebase
+- [x] Create backend/database.sql with table schemas and sample data
+- [x] Create backend/init-db.js script for programmatic database setup
+- [ ] Start XAMPP and run database.sql in phpMyAdmin or command line
+- [ ] Start backend server (npm start in backend)
+- [ ] Test backend endpoints (e.g., GET /api/customers)
+- [ ] Start frontend (npm run dev in frontend)
+- [ ] Verify full frontend-backend integration
 
-## Dependent Files to Edit
-- frontend/src/firebase.js (delete)
-- frontend/src/pages/customer-portal/index.jsx (edit)
-- frontend/package.json (edit)
+## Dependent Files
+- backend/database.sql (created)
+- backend/init-db.js (created)
 
 ## Followup Steps
-- Test frontend-backend integration
-- Confirm no Firebase code remains
+- Ensure XAMPP MySQL is running
+- Execute database.sql to create tables and insert sample data
+- Run backend and frontend
+- Test CRUD operations in the app

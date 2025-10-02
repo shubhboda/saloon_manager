@@ -1,4 +1,4 @@
-export default function AppIcon({ size = 24, color = "currentColor" }) {
+export default function Icon({ size = 24, color = "currentColor" }) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"

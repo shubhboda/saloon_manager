@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Icon from '../../../components/AppIcon';
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -16,9 +18,9 @@ const LoginForm = () => {
 
   // Mock credentials for different user types
   const mockCredentials = {
-    owner: { email: 'owner@salon.com', password: 'owner123' },
-    staff: { email: 'staff@salon.com', password: 'staff123' },
-    customer: { email: 'customer@salon.com', password: 'customer123' }
+    owner: { email: 'owner@salon.com', password: 'owner123', role: 'owner', name: 'John Owner' },
+    staff: { email: 'staff@salon.com', password: 'staff123', role: 'staff', name: 'Jane Staff' },
+    customer: { email: 'customer@salon.com', password: 'customer123', role: 'customer', name: 'John Customer' }
   };
 
   const validateForm = () => {
@@ -58,19 +60,29 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
-      const isValidCredentials = Object.values(mockCredentials)?.some(
-        cred => cred?.email === formData?.email && cred?.password === formData?.password
-      );
-      
-      if (isValidCredentials) {
-        navigate('/dashboard');
+      let userData = null;
+      for (const [role, cred] of Object.entries(mockCredentials)) {
+        if (cred.email === formData.email && cred.password === formData.password) {
+          userData = { ...cred };
+          break;
+        }
+      }
+
+      if (userData) {
+        login(userData);
+        // Redirect based on role
+        if (userData.role === 'customer') {
+          navigate('/customer/dashboard');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
         setErrors({
           general: 'Invalid credentials. Use: owner@salon.com/owner123, staff@salon.com/staff123, or customer@salon.com/customer123'
